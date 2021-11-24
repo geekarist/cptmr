@@ -10,6 +10,7 @@
 
     <me.cpele.cptmr.ui.main.CircularTimerView
         android:id="@+id/circular_timer"
+        android:layout_margin="8dp"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

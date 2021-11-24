@@ -14,13 +14,18 @@ class CircularTimerView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    private val paintStrokeWidth = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        8f,
+        resources.displayMetrics
+    )
+
+    private val halfStrokeWidth = paintStrokeWidth / 2
+
     private val paint = Paint().apply {
         color = resources.getColor(android.R.color.holo_red_dark, context.theme)
-        strokeWidth = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            8f,
-            resources.displayMetrics
-        )
+        strokeWidth = paintStrokeWidth
+        style = Paint.Style.STROKE
     }
 
     fun setTime(hour: Int, minute: Int) {
@@ -32,7 +37,7 @@ class CircularTimerView @JvmOverloads constructor(
         // Draw background
         val halfWidth = measuredWidth / 2f
         val halfHeight = measuredHeight / 2f
-        val radius = min(halfWidth, halfHeight)
+        val radius = min(halfWidth, halfHeight) - halfStrokeWidth
         canvas.drawCircle(halfWidth, halfHeight, radius, paint)
 
         // TODO: Draw time
