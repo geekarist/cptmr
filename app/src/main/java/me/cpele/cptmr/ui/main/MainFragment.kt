@@ -1,12 +1,12 @@
 package me.cpele.cptmr.ui.main
 
 import android.app.TimePickerDialog
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import me.cpele.cptmr.R
 
 class MainFragment : Fragment() {
@@ -31,7 +31,7 @@ class MainFragment : Fragment() {
 
         timerView.setOnClickListener {
             val listener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                timerView.setTime(hourOfDay, minute)
+                viewModel.changeTime(hourOfDay, minute)
                 viewModel.startTimer()
             }
             TimePickerDialog(context, listener, 0, 0, true).show()

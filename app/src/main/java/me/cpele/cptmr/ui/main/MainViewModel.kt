@@ -14,4 +14,8 @@ class MainViewModel : ViewModel() {
     fun startTimer() {
         // TODO
     }
+
+    fun changeTime(hourOfDay: Int, minute: Int) {
+        _timeLive.value = Time(hourOfDay, minute)
+    }
 }
