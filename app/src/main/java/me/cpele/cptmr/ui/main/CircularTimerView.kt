@@ -16,40 +16,50 @@ class CircularTimerView @JvmOverloads constructor(
 
     private val paintStrokeWidth = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
-        8f,
+        4f,
         resources.displayMetrics
     )
 
     private val halfStrokeWidth = paintStrokeWidth / 2
 
-    private val circlePaint = Paint().apply {
+    private val smallStrokeWidth = paintStrokeWidth * 2f / 3f
+
+    private val framePaint = Paint().apply {
         color = resources.getColor(android.R.color.holo_red_dark, context.theme)
         strokeWidth = paintStrokeWidth
         style = Paint.Style.STROKE
     }
 
-    private val arcPaint = Paint().apply {
+    private val smallFramePaint = Paint().apply {
+        color = resources.getColor(android.R.color.holo_blue_light, context.theme)
+        strokeWidth = smallStrokeWidth
+        style = Paint.Style.STROKE
+    }
+
+    private val mnHandPaint = Paint().apply {
         color = resources.getColor(android.R.color.holo_red_light, context.theme)
+        alpha = 127
+        style = Paint.Style.FILL
+    }
+
+    private val hrHandPaint = Paint().apply {
+        color = resources.getColor(android.R.color.holo_blue_light, context.theme)
+        alpha = 191
         style = Paint.Style.FILL
     }
 
     private var hour: Int? = null
+    private var sweepAngleHr: Float = 0f
+
     private var minute: Int? = null
-    private var sweepAngle: Float = 0f
+    private var sweepAngleMn: Float = 0f
 
     fun setTime(hour: Int, minute: Int) {
         this.hour = hour
         this.minute = minute
-        sweepAngle = computeAngle(hour, minute)
+        sweepAngleMn = computeMnAngle(minute)
+        sweepAngleHr = computeHrAngle(hour)
         invalidate()
-    }
-
-    private fun computeAngle(hour: Int, minute: Int): Float {
-        val minuteLimited = minute % 60 // Minute could be > 60
-        val minuteFactor = minuteLimited / 60f // Between 0 and 1
-        return 360 * minuteFactor // Between 0 and 360
-
-        // Ignore hour for now
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -59,23 +69,62 @@ class CircularTimerView @JvmOverloads constructor(
         val halfHeight = measuredHeight / 2f
         val radius = min(halfWidth, halfHeight) - halfStrokeWidth
 
-        // Clock hands parameters
-        val left = halfWidth - radius
-        val top = halfHeight - radius
-        val right = halfWidth + radius
-        val bottom = halfHeight + radius
+        // Clock hand parameters (minutes)
+        val mnLeft = halfWidth - radius
+        val mnTop = halfHeight - radius
+        val mnRight = halfWidth + radius
+        val mnBottom = halfHeight + radius
 
+        // Clock hand parameters (hours)
+        val smallRadius = radius * 2f / 3f
+        val hrLeft = halfWidth - smallRadius
+        val hrTop = halfHeight - smallRadius
+        val hrRight = halfWidth + smallRadius
+        val hrBottom = halfHeight + smallRadius
+
+        // Draw hours
         canvas.drawArc(
-            left,
-            top,
-            right,
-            bottom,
+            hrLeft,
+            hrTop,
+            hrRight,
+            hrBottom,
             -90f,
-            sweepAngle,
+            sweepAngleHr,
             true,
-            arcPaint
+            hrHandPaint
         )
 
-        canvas.drawCircle(halfWidth, halfHeight, radius, circlePaint)
+        // Draw minutes
+        canvas.drawArc(
+            mnLeft,
+            mnTop,
+            mnRight,
+            mnBottom,
+            -90f,
+            sweepAngleMn,
+            true,
+            mnHandPaint
+        )
+
+        // Draw frames
+        canvas.drawCircle(halfWidth, halfHeight, radius, framePaint)
+        canvas.drawCircle(halfWidth, halfHeight, smallRadius, smallFramePaint)
     }
 }
+
+private fun computeHrAngle(hour: Int): Float {
+    val hourLimited = hour % 24 // Minute could be > 24
+    val hourFactor = hourLimited / 24f // Between 0 and 1
+    return 360 * hourFactor // Between 0 and 360
+
+    // Ignore hour for now
+}
+
+private fun computeMnAngle(minute: Int): Float {
+    val minuteLimited = minute % 60 // Minute could be > 60
+    val minuteFactor = minuteLimited / 60f // Between 0 and 1
+    return 360 * minuteFactor // Between 0 and 360
+
+    // Ignore hour for now
+}
+
