@@ -48,13 +48,13 @@ class CircularTimerView @JvmOverloads constructor(
         style = Paint.Style.FILL
     }
 
-    private var hour: Int? = null
+    private var hour: Long? = null
     private var sweepAngleHr: Float = 0f
 
-    private var minute: Int? = null
+    private var minute: Long? = null
     private var sweepAngleMn: Float = 0f
 
-    fun setTime(hour: Int, minute: Int) {
+    fun setTime(hour: Long, minute: Long) {
         this.hour = hour
         this.minute = minute
         sweepAngleMn = computeMnAngle(minute)
@@ -112,19 +112,15 @@ class CircularTimerView @JvmOverloads constructor(
     }
 }
 
-private fun computeHrAngle(hour: Int): Float {
+private fun computeHrAngle(hour: Long): Float {
     val hourLimited = hour % 24 // Minute could be > 24
     val hourFactor = hourLimited / 24f // Between 0 and 1
     return 360 * hourFactor // Between 0 and 360
-
-    // Ignore hour for now
 }
 
-private fun computeMnAngle(minute: Int): Float {
+private fun computeMnAngle(minute: Long): Float {
     val minuteLimited = minute % 60 // Minute could be > 60
     val minuteFactor = minuteLimited / 60f // Between 0 and 1
     return 360 * minuteFactor // Between 0 and 360
-
-    // Ignore hour for now
 }
 
